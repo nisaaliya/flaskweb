@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Bangun Ruang</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function validateForm() {
+            let shape = document.getElementById("shape").value;
+            let inputFields = document.querySelectorAll(".input-field");
+            let isEmpty = false;
+
+            inputFields.forEach(field => {
+                // Validasi hanya pada input yang ditampilkan
+                if (field.closest(".input-container").style.display !== "none" && field.value.trim() === "") {
+                    isEmpty = true;
+                }
+            });
+
+            if (isEmpty) {
+                alert("Mohon masukkan angka terlebih dahulu!");
+                return false;
+            }
+
+            return true;
+        }
+
+        function showInputs() {
+            let shape = document.getElementById("shape").value;
+            document.getElementById("kubus-inputs").style.display = (shape === "kubus") ? "block" : "none";
+            document.getElementById("balok-inputs").style.display = (shape === "balok") ? "block" : "none";
+            document.getElementById("tabung-inputs").style.display = (shape === "tabung") ? "block" : "none";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Kalkulator Bangun Ruang</h2>
+        <form method="POST" onsubmit="return validateForm();">
+            <label for="shape">Pilih Bangun Ruang:</label>
+            <select id="shape" name="shape" onchange="showInputs()" required>
+                <option value="" disabled selected>Pilih...</option>
+                <option value="kubus">Kubus</option>
+                <option value="balok">Balok</option>
+                <option value="tabung">Tabung</option>
+            </select>
+
+            <div id="kubus-inputs" class="input-container" style="display: none;">
+                <label for="sisi">Sisi Kubus:</label>
+                <input type="number" id="sisi" name="sisi" class="input-field">
+            </div>
+
+            <div id="balok-inputs" class="input-container" style="display: none;">
+                <label for="panjang">Panjang Balok:</label>
+                <input type="number" id="panjang" name="panjang" class="input-field">
+                <label for="lebar">Lebar Balok:</label>
+                <input type="number" id="lebar" name="lebar" class="input-field">
+                <label for="tinggi">Tinggi Balok:</label>
+                <input type="number" id="tinggi" name="tinggi" class="input-field">
+            </div>
+
+            <div id="tabung-inputs" class="input-container" style="display: none;">
+                <label for="radius">Jari-jari Tabung:</label>
+                <input type="number" id="radius" name="radius" class="input-field">
+                <label for="tinggitab">Tinggi Tabung:</label>
+                <input type="number" id="tinggitab" name="tinggitab" class="input-field">
+            </div>
+
+            <button type="submit">Hitung</button>
+        </form>
+
+        {% if result is not none %}
+        <div class="result">
+            <h3>Hasil Perhitungan</h3>
+            
+            {% if shape == "kubus" %}
+                <p>Sisi Kubus : <strong>{{ values.sisi }} cm</strong></p>
+            {% elif shape == "balok" %}
+                <p>Panjang Balok : <strong>{{ values.panjang }} cm</strong></p>
+                <p>Lebar Balok : <strong>{{ values.lebar }} cm</strong></p>
+                <p>Tinggi Balok : <strong>{{ values.tinggi }} cm</strong></p>
+            {% elif shape == "tabung" %}
+                <p>Jari-jari Tabung : <strong>{{ values.radius }} cm</strong></p>
+                <p>Tinggi Tabung : <strong>{{ values.tinggitab }} cm</strong></p>
+            {% endif %}
+    
+            <p><strong>Volume {{ shape|capitalize }} = {{ result }} cm³</strong></p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
